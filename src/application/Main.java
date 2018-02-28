@@ -1,5 +1,6 @@
 package application;
 	
+import MainMenu.MainMenu;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -11,11 +12,11 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			BorderPane root = new BorderPane();
-			Scene scene = new Scene(root,300,300);
+			Scene scene = new Scene(root,600,600);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
-			primaryStage.show();
-			Game.graj(primaryStage, root);
+			//primaryStage.show();
+			MainMenu.draw(primaryStage);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
