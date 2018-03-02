@@ -2,19 +2,27 @@ package application;
 
 import java.util.HashMap;
 
+import MainMenu.MainMenu;
 import javafx.event.EventHandler;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Game {
 	public static int gamer=1;
 	public static void graj(Stage primaryStage)
 	{
+		for(int i=0; i<Area.area.length; i++)
+		{
+			Area.area[i]=0;
+		}
 		Pane root=new Pane();
 		primaryStage.getScene().setRoot(root);
 		primaryStage.setHeight(700);
@@ -24,6 +32,41 @@ public class Game {
 		points.put(2, 0);
 		ImageView cross=new ImageView(new Image("cross.png"));
 		ImageView round=new ImageView(new Image("round.png"));
+		Text player=new Text();
+		DropShadow ds = new DropShadow();
+		//ds.setOffsetY(3.0f);
+		ds.setColor(Color.GRAY);
+		player.setFont(Font.font ("Comic Sans MS", 50));
+		player.setFill(Color.YELLOW);
+		player.setLayoutX(20);
+		player.setLayoutY(670);
+		player.setEffect(ds);
+		player.setText("Player 1, your turn!");
+		root.getChildren().add(player);
+		Text again=new Text();
+		again.setFont(Font.font ("Comic Sans MS", 20));
+		again.setFill(Color.YELLOW);
+		again.setLayoutX(420);
+		again.setLayoutY(640);
+		again.setEffect(ds);
+		again.setText("Play again");
+		again.setOnMouseReleased(new EventHandler<MouseEvent>() {
+		    public void handle(MouseEvent me) {
+		        Game.graj(primaryStage);
+		    }
+		});
+		Text quitt=new Text();
+		quitt.setFont(Font.font ("Comic Sans MS", 20));
+		quitt.setFill(Color.YELLOW);
+		quitt.setLayoutX(420);
+		quitt.setLayoutY(670);
+		quitt.setEffect(ds);
+		quitt.setText("Quit");
+		quitt.setOnMouseReleased(new EventHandler<MouseEvent>() {
+		    public void handle(MouseEvent me) {
+		       primaryStage.close();
+		    }
+		});
 		for(int i=0; i<2; i++)
 		{
 			Line l=new Line();
@@ -31,7 +74,7 @@ public class Game {
 			l.setStartY((i+1)*200);
 			l.setEndX(600);
 			l.setEndY((i+1)*200);
-			l.setStyle("-fx-color: #141414;");
+			l.setStyle("-fx-color: #141414");
 			l.setStrokeWidth(10);
 			root.getChildren().add(l);
 		}
@@ -53,17 +96,22 @@ public class Game {
 		    	ImageView c=new ImageView();
 		    	c.setFitWidth(150);
 		    	c.setFitHeight(150);
+		    	if(Area.area[0]!=-1)
+		    	{
 		    	if(gamer==1)
 		    	{
 		    		gamer=2;
 		    		c=new ImageView(cross.getImage());
+		    		player.setText("Player 2, your turn!");
 		    	}
 		    	else
 		    	{
 		    		gamer=1;
 		    		c=new ImageView(round.getImage());
+		    		player.setText("Player 1, your turn!");
 		    	}
 		    	System.out.println(me.getSceneX()+ " "+ me.getSceneY());
+		    	
 		    	if(me.getSceneX()>=0 && me.getSceneX()<200)
 		    	{
 		    		if(me.getSceneY()>=0 && me.getSceneY()<200 && Area.area[1]==0)
@@ -156,10 +204,27 @@ public class Game {
 		    	}
 		    	if(Area.compare(1, 2, 3) || Area.compare(4, 5, 6) || Area.compare(7, 8, 9) || Area.compare(1, 4, 7) || Area.compare(2, 5, 8) || Area.compare(3, 6, 9) || Area.compare(1, 5, 9) || Area.compare(3, 5, 7))
 		    	{
-		    		System.out.println("Wygrywa gracz numer: "+gamer);
-		    		primaryStage.close();
+		    		if(gamer==2)
+		    			player.setText("Player 1 won...");
+		    		else
+		    			player.setText("Player 2 won...");
+		    		
+		    		for(int i=root.getChildren().size()-1; i>5; i-=2)
+		    		{
+		    				root.getChildren().get(i-1).setOpacity(0.2);	    			   			
+		    		}
+		    		Area.area[0]=-1;
+		    		root.getChildren().add(again);
+		    		root.getChildren().add(quitt);
 		    	}
-		    	
+		    	if(Area.area[0]==9)
+		    	{
+		    		player.setText("REMIS!");
+		    		Area.area[0]=-1;
+		    		root.getChildren().add(again);
+		    		root.getChildren().add(quitt);
+		    	}
+		    	}
 		       
 		    }
 		});
